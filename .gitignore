@@ -1,0 +1,29 @@
+# Dossiers de compilation (Outputs)
+[Bb]in/
+[Oo]bj/
+
+# Dossiers et fichiers générés par Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Outils de packages (NuGet)
+packages/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+
+# Fichiers de configuration locaux / Secrets (Ne jamais commiter)
+*.usersecrets
+appsettings.Development.json
+appsettings.Local.json
+
+# Éléments de build de l'OS et divers
+.DS_Store
+Thumbs.db
+*.log
