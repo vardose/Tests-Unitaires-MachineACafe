@@ -2,12 +2,11 @@
 
 public class SoftwareMachine
 {
-    public void InsérerPièce(ushort montantEnCents)
+    public void Insérer(ushort montantEnCentimes)
     {
-        NombreCafésServis ++;
-        SommeEncaisséeEnCentimes += 40;
+        MontantEncaisséEnCentimes += montantEnCentimes;
     }
 
-    public ushort NombreCafésServis { get; private set; }
-    public ushort SommeEncaisséeEnCentimes { get; private set; }
+    public ushort NombreCafésServis         => 1;
+    public ushort MontantEncaisséEnCentimes { get; private set; }
 }
