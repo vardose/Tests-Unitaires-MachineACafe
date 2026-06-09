@@ -13,6 +13,12 @@ namespace MachineACafé
 
         public Coin(CoinCode code)
         {
+            // Si le code reçu n'est pas défini dans l'enum CoinCode (ex: 3, 4, 6...)
+            if (!Enum.IsDefined(typeof(CoinCode), code))
+            {
+                throw new ArgumentException($"La pièce avec la valeur {(int)code} n'existe pas.");
+            }
+
             Code = code;
         }
 

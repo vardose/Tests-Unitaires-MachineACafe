@@ -45,6 +45,7 @@ namespace MachineACafé.Test
         [InlineData(101)]
         [InlineData(199)]
         [InlineData(201)] 
+
         public void CoinValeurInvalide(ushort valeurInvalide)
         {
             Assert.Throws<ArgumentException>(() =>
