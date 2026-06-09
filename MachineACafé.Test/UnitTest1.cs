@@ -8,11 +8,11 @@ public class UnitTest1
         const ushort prixCaféEnCents = 40;
 
         // ETANT DONNE une machine a café
-        var machineACafé = new SoftwareMachine();
+        var machineACafé = new SoftwareMachineBuilder().Build();
 
         // QUAND le hardware signale une somme suffisante pour le prix d'un café, deux fois
-        machineACafé.InsérerPièce(prixCaféEnCents);
-        machineACafé.InsérerPièce(prixCaféEnCents);
+        machineACafé.Insérer(prixCaféEnCents);
+        machineACafé.Insérer(prixCaféEnCents);
 
         // ALORS le hardware est sollicité pour faire couler deux cafés
         Assert.Equal(2, machineACafé.NombreCafésServis);
@@ -27,13 +27,13 @@ public class UnitTest1
         const ushort prixCaféEnCents = 40;
 
         // ETANT DONNE une machine a café
-        var machineACafé = new SoftwareMachine();
+        var machineACafé = new SoftwareMachineBuilder().Build();
 
-        // QUAND le hardware signale une somme suffisante pour le prix d'un café
-        machineACafé.InsérerPièce(prixCaféEnCents);
+        // QUAND on insère le bon prix du café
+        machineACafé.Insérer(prixCaféEnCents);
 
-        // ALORS le hardware est sollicité pour faire couler un café
-        Assert.Equal(1, machineACafé.NombreCafésServis);
+        // ALORS MakeACofee est appelé une fois sur le hardware
+        Assert.;
 
         // ET il est demandé au hardware de collecter les fonds
         Assert.Equal(prixCaféEnCents, machineACafé.SommeEncaisséeEnCentimes);
@@ -43,7 +43,7 @@ public class UnitTest1
     public void CasRien()
     {
         // ETANT DONNE une machine a café
-        var machineACafé = new SoftwareMachine();
+        var machineACafé = new SoftwareMachineBuilder().Build();
 
         // ALORS aucun café n'est servi
         Assert.Equal(0, machineACafé.NombreCafésServis);

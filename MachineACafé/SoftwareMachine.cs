@@ -2,7 +2,9 @@
 
 public class SoftwareMachine
 {
-    public void InsérerPièce(ushort montantEnCents)
+    public const ushort prixCaféEnCents = 40;
+
+    public void Insérer(ushort montantEnCents)
     {
         NombreCafésServis ++;
         SommeEncaisséeEnCentimes += 40;
