@@ -15,7 +15,7 @@ public class SoftwareMachine
 
     public void Insérer(ushort montantEnCentimes)
     {
-        if (montantEnCentimes < 40)
+        if (montantEnCentimes < 40 || montantEnCentimes > 40)
         {
             _changeMachine.FlushStoredMoney();
             return;

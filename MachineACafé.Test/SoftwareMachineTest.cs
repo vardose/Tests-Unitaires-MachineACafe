@@ -65,11 +65,11 @@ public class SoftwareMachineTest
         // QUAND le hardware signale une somme suffisante pour un café
         machineACafé.Insérer(prixCaféEnCents);
 
-        // ALORS le hardware ne peux pas faire couler de café
-        Assert.Equal(0, brewer.makeACoffeeinvocations);
-
-        // ET il est demandé au hardware de rembourser les fonds
+        // ALORS il est demandé au hardware de rembourser les fonds
         Assert.Equal(1, changeMachine.FlushStoredMoneyInvocations);
+
+        // ET il n'est pas demandé au hardware de collecter les fonds
+        Assert.Equal(0, changeMachine.CollectStoredMoneyInvocations);
     }
 
     /* --- L'utilisateur ne met pas assez d'argent pour un café --- */
