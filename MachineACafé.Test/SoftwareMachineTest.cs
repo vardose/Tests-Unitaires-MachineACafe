@@ -4,12 +4,12 @@ namespace MachineACafé.Test;
 
 public class SoftwareMachineTest
 {
+    public Coin prixCafé = new Coin(CoinCode.FiftyCents);
+
     /* --- Aucune action n'est effectué */
     [Fact]
     public void AucuneAction()
     {
-        const ushort prixCaféEnCents = 40;
-
         // ETANT DONNE une machine a café
         var changeMachine = new ChangeMachineSpy(new ChangeMachineStub());
         var brewer = new BrewerSpy(new BrewerStub());
@@ -28,8 +28,6 @@ public class SoftwareMachineTest
     [Fact]
     public void CasNominal()
     {
-        const ushort prixCaféEnCents = 40;
-
         // ETANT DONNE une machine a café
         var changeMachine = new ChangeMachineSpy(new ChangeMachineStub());
         var brewer = new BrewerSpy(new BrewerStub());
@@ -39,7 +37,7 @@ public class SoftwareMachineTest
             .Build();
 
         // QUAND on insère le bon prix du café
-        machineACafé.Insérer(prixCaféEnCents);
+        machineACafé.Insérer(prixCafé);
 
         // ALORS MakeACofee est appelé une fois sur le hardware
         Assert.Equal(1, brewer.makeACoffeeinvocations);
@@ -52,8 +50,6 @@ public class SoftwareMachineTest
     [Fact]
     public void CasBrewerDefaillant()
     {
-        const ushort prixCaféEnCents = 40;
-
         // ETANT DONNE une machine à café avec un brewer défaillant
         var changeMachine = new ChangeMachineSpy(new ChangeMachineStub());
         var brewer = new BrewerSpy(new BrewerDummy());
@@ -63,7 +59,7 @@ public class SoftwareMachineTest
             .Build();
 
         // QUAND le hardware signale une somme suffisante pour un café
-        machineACafé.Insérer(prixCaféEnCents);
+        machineACafé.Insérer(prixCafé);
 
         // ALORS il est demandé au hardware de rembourser les fonds
         Assert.Equal(1, changeMachine.FlushStoredMoneyInvocations);
@@ -76,8 +72,6 @@ public class SoftwareMachineTest
     [Fact]
     public void CasMontantInsuffisant()
     {
-        const ushort prixCaféEnCents = 40;
-
         // ETANT DONNE une machine à café
         var changeMachine = new ChangeMachineSpy(new ChangeMachineStub());
         var brewer = new BrewerSpy(new BrewerStub());
@@ -87,7 +81,8 @@ public class SoftwareMachineTest
             .Build();
 
         // QUAND le hardware signale une somme insuffisante pour un café
-        machineACafé.Insérer(prixCaféEnCents - 1);
+        prixCafé = new Coin(CoinCode.TwentyCents);
+        machineACafé.Insérer(prixCafé);
 
         // ALORS le hardware ne peux pas faire couler de café
         Assert.Equal(0, brewer.makeACoffeeinvocations);
@@ -100,8 +95,6 @@ public class SoftwareMachineTest
     [Fact]
     public void CasArgentEnTrop()
     {
-        const ushort prixCaféEnCents = 40;
-
         // ETANT DONNE une machine à café
         var changeMachine = new ChangeMachineSpy(new ChangeMachineStub());
         var brewer = new BrewerSpy(new BrewerStub());
@@ -111,7 +104,8 @@ public class SoftwareMachineTest
             .Build();
 
         // QUAND le hardware signale une somme plus que suffisante pour un café
-        machineACafé.Insérer(prixCaféEnCents + 1);
+        prixCafé = new Coin(CoinCode.OneEuro);
+        machineACafé.Insérer(prixCafé);
 
         // ALORS le hardware ne fait pas couler de café
         Assert.Equal(0, brewer.makeACoffeeinvocations);

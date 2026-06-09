@@ -13,9 +13,12 @@ public class SoftwareMachine
         _changeMachine = changeMachine;
     }
 
-    public void Insérer(ushort montantEnCentimes)
+    public void Insérer(Coin pieceInséré)
     {
-        if (montantEnCentimes < 40 || montantEnCentimes > 40)
+        ushort montantEnCentimes = 0;
+        montantEnCentimes += pieceInséré.ValeurEnCentimes;
+
+        if (montantEnCentimes < 50 || montantEnCentimes > 50)
         {
             _changeMachine.FlushStoredMoney();
             return;
