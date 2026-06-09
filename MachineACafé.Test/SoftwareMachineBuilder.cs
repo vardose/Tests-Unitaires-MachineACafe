@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hardware;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,13 @@ namespace MachineACafé.Test
 {
     internal class SoftwareMachineBuilder
     {
-        public SoftwareMachine Build()
+        private IBrewer _brewer = new BrewerSpy();
+
+
+
+        public SoftwareMachine Build(IBrewer brewer)
         {
-            return new SoftwareMachine();
+            return new SoftwareMachine(brewer);
         }
     }
 }

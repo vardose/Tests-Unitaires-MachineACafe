@@ -1,13 +1,17 @@
-﻿namespace MachineACafé;
+﻿using Hardware;
 
-public class SoftwareMachine
+namespace MachineACafé;
+
+public class SoftwareMachine(IBrewer brewer)
 {
-    public const ushort prixCaféEnCents = 40;
 
     public void Insérer(ushort montantEnCents)
     {
         NombreCafésServis ++;
         SommeEncaisséeEnCentimes += 40;
+
+        // Demande au hardware de faire couler un café
+        brewer.MakeACoffee();
     }
 
     public ushort NombreCafésServis { get; private set; }
