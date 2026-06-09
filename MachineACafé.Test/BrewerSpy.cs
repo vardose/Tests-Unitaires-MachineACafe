@@ -4,37 +4,45 @@ namespace MachineACafé.Test
 {
     internal class BrewerSpy : IBrewer
     {
-        public ushort makeACoffeeAppelé { get; set; } = 0;
+
+        private readonly IBrewer _behavior;
+
+        public ushort makeACoffeeinvocations { get; set; } = 0;
+
+        public BrewerSpy(IBrewer behavior)
+        {
+            _behavior = behavior;
+        }
 
         public bool MakeACoffee()
         {
-            makeACoffeeAppelé++;
-            return true;
+            makeACoffeeinvocations++;
+            return _behavior.MakeACoffee();
         }
 
         public bool PourChocolate()
         {
-            return true;
+            return _behavior.PourChocolate();
         }
 
         public bool PourMilk()
         {
-            return true;
+            return _behavior.PourMilk();
         }
 
         public bool PourSugar()
         {
-            return true;
+            return _behavior.PourSugar();
         }
 
         public bool PourWater()
         {
-            return true;
+            return _behavior.PourWater();
         }
 
         public bool TryPullWater()
         {
-            return true;
+            return _behavior.TryPullWater();  
         }
     }
 }

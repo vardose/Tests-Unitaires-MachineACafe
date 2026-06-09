@@ -1,21 +1,27 @@
 ﻿using Hardware;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MachineACafé.Test
 {
     internal class SoftwareMachineBuilder
     {
-        private IBrewer _brewer = new BrewerSpy();
+        private IBrewer _brewer = new BrewerStub();
+        private IChangeMachine _changeMachine = new ChangeMachineStub();
 
-
-
-        public SoftwareMachine Build(IBrewer brewer)
+        public SoftwareMachine Build()
         {
-            return new SoftwareMachine(brewer);
+            return new SoftwareMachine(_brewer, _changeMachine);
+        }
+
+        public SoftwareMachineBuilder AyantUnBrewer(IBrewer brewer)
+        {
+            _brewer = brewer;
+            return this;
+        }
+
+        public SoftwareMachineBuilder AyantUneChangeMachine(IChangeMachine changeMachine)
+        {
+            _changeMachine = changeMachine;
+            return this;
         }
     }
 }

@@ -2,18 +2,33 @@
 
 namespace MachineACafé;
 
-public class SoftwareMachine(IBrewer brewer)
+public class SoftwareMachine
 {
+    private readonly IBrewer _brewer;
+    private readonly IChangeMachine _changeMachine;
 
-    public void Insérer(ushort montantEnCents)
+    public SoftwareMachine(IBrewer brewer, IChangeMachine changeMachine)
     {
-        NombreCafésServis ++;
-        SommeEncaisséeEnCentimes += 40;
-
-        // Demande au hardware de faire couler un café
-        brewer.MakeACoffee();
+        _brewer = brewer;
+        _changeMachine = changeMachine;
     }
 
-    public ushort NombreCafésServis { get; private set; }
-    public ushort SommeEncaisséeEnCentimes { get; private set; }
+    public void Insérer(ushort montantEnCentimes)
+    {
+        if (montantEnCentimes < 40)
+        {
+            _changeMachine.FlushStoredMoney();
+            return;
+        }
+
+        try
+        {
+            _brewer.MakeACoffee();
+            _changeMachine.CollectStoredMoney();
+        }
+        catch
+        {
+            _changeMachine.FlushStoredMoney();
+        }
+    }
 }
