@@ -1,13 +1,35 @@
-﻿namespace MachineACafé;
+﻿using Hardware;
+
+namespace MachineACafé;
 
 public class SoftwareMachine
 {
-    public void InsérerPièce(ushort montantEnCents)
+    private readonly IBrewer _brewer;
+    private readonly IChangeMachine _changeMachine;
+
+    public SoftwareMachine(IBrewer brewer, IChangeMachine changeMachine)
     {
-        NombreCafésServis ++;
-        SommeEncaisséeEnCentimes += 40;
+        _brewer = brewer;
+        _changeMachine = changeMachine;
+        _changeMachine.RegisterMoneyInsertedCallback(coin => Insérer(new Coin((ushort) coin)));
     }
 
-    public ushort NombreCafésServis { get; private set; }
-    public ushort SommeEncaisséeEnCentimes { get; private set; }
+    private void Insérer(Coin somme)
+    {
+        if (somme.ValueInCents < 40)
+        {
+            _changeMachine.FlushStoredMoney();
+            return;
+        }
+
+        try
+        {
+            _brewer.MakeACoffee();
+            _changeMachine.CollectStoredMoney();
+        }
+        catch
+        {
+            _changeMachine.FlushStoredMoney();
+        }
+    }
 }
