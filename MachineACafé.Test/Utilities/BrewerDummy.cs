@@ -1,4 +1,4 @@
-using Hardware;
+﻿using Hardware;
 
 namespace MachineACafé.Test.Utilities;
 

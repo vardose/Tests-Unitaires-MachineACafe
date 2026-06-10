@@ -1,8 +1,8 @@
-using Hardware;
+﻿using Hardware;
 
 namespace MachineACafé.Test.Utilities;
 
-public class BrewerStub : IBrewer
+internal class BrewerStub : IBrewer
 {
     public bool MakeACoffee()
     {

@@ -1,18 +1,24 @@
-using Hardware;
+﻿using Hardware;
 
 namespace MachineACafé.Test.Utilities;
 
-public class BrewerSpy : IBrewer
+internal class BrewerSpy : IBrewer
 {
     private readonly IBrewer _behavior;
-    
-    public BrewerSpy(IBrewer brewer)
+
+    public ushort MakeACoffeeInvocations { get; private set; }
+    public bool Untouched => MakeACoffeeInvocations == 0;
+
+    public BrewerSpy(): this(new BrewerStub()) {}
+
+    public BrewerSpy(IBrewer behavior)
     {
-        _behavior = brewer;
+        _behavior = behavior;
     }
-    
+
     public bool MakeACoffee()
     {
+        MakeACoffeeInvocations++;
         return _behavior.MakeACoffee();
     }
 

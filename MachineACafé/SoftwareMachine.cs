@@ -4,18 +4,32 @@ namespace MachineACafé;
 
 public class SoftwareMachine
 {
-    public const ushort prixDuCafé = 40;
+    private readonly IBrewer _brewer;
+    private readonly IChangeMachine _changeMachine;
+
     public SoftwareMachine(IBrewer brewer, IChangeMachine changeMachine)
     {
-        changeMachine.FlushStoredMoney();
-        changeMachine.CollectStoredMoney();
-    }
-    
-    public void Insérer(ushort montantEnCentimes)
-    {
-        MontantEncaisséEnCentimes += montantEnCentimes;
+        _brewer = brewer;
+        _changeMachine = changeMachine;
+        _changeMachine.RegisterMoneyInsertedCallback(coin => Insérer(new Coin((ushort) coin)));
     }
 
-    public ushort NombreCafésServis         => 1;
-    public ushort MontantEncaisséEnCentimes { get; private set; }
+    private void Insérer(Coin somme)
+    {
+        if (somme.ValueInCents < 40)
+        {
+            _changeMachine.FlushStoredMoney();
+            return;
+        }
+
+        try
+        {
+            _brewer.MakeACoffee();
+            _changeMachine.CollectStoredMoney();
+        }
+        catch
+        {
+            _changeMachine.FlushStoredMoney();
+        }
+    }
 }
