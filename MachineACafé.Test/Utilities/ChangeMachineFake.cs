@@ -29,4 +29,9 @@ public class ChangeMachineFake : IChangeMachine
     {
         _callback?.Invoke(fiftyCents);
     }
+
+    public bool SimulerBoutonLungo()
+    {
+        return true;
+    }
 }
