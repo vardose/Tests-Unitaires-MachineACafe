@@ -2,7 +2,7 @@
 
 namespace MachineACafé.Test.Utilities;
 
-internal class ChangeMachineSpy : IChangeMachine
+public class ChangeMachineSpy : IChangeMachine
 {
     private readonly IChangeMachine _behavior;
 

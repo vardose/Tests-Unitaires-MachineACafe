@@ -2,7 +2,7 @@
 
 namespace MachineACafé.Test.Utilities;
 
-internal class BrewerSpy : IBrewer
+public class BrewerSpy : IBrewer
 {
     private readonly IBrewer _behavior;
 
@@ -23,7 +23,14 @@ internal class BrewerSpy : IBrewer
     public bool MakeACoffee()
     {
         MakeACoffeeInvocations++;
-        return ResultatMakeACoffee; // Je renvois le stock d'eau pour le cas où un allongé est impossible
+
+        // Dans le cas où le stock est vide ou que le bouton reset n'a pas été activé, le café ne coule pas
+        if (!ResultatMakeACoffee)
+        {
+            return false;
+        }
+
+        return _behavior.MakeACoffee();
     }
 
     public bool TryPullWater()

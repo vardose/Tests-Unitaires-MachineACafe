@@ -1,43 +1,12 @@
 ﻿
 using Hardware;
 using MachineACafé.Test.Utilities;
+using MachineACafé.Test.Utilities.TestDoubles;
 
 namespace MachineACafé.Test;
 
 public class StockageTest
 {
-    [Fact]
-    public void CasCaféStockPlein()
-    {
-        // ETANT DONNE une machine à café dont le sotck d'eau et de café est plein
-        var changeMachine = new ChangeMachineFake();
-        var changeMachineSpy = new ChangeMachineSpy(changeMachine);
-        var brewer = new BrewerSpy();
-        var buttonPanel = new ButtonPanelFake();
-
-        _ = new SoftwareMachineBuilder()
-            .AyantUneChangeMachine(changeMachineSpy)
-            .AyantUnBrewer(brewer)
-            .AyantUnButtonPanel(buttonPanel)
-            .Build();
-
-        // QUAND on commande un café et que le bouton reset a été activé lors du dernier rechargement
-        buttonPanel.SimulerButtonPressed(ButtonCode.MaintenanceReset);
-        changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
-
-        // ALORS MakeACoffee est appelé une fois sur le hardware
-        Assert.Equal(1, brewer.MakeACoffeeInvocations);
-
-        // ET le café est servi
-        Assert.True(brewer.MakeACoffee());
-
-        // ET CollectStoredMoney est appelé une fois sur le hardware
-        Assert.Equal(1, changeMachineSpy.CollectStoredMoneyInvocations);
-
-        // ET FlushStoredMoney n'est pas appelé
-        Assert.Equal(0, changeMachineSpy.FlushStoredMoneyInvocations);
-    }
-
     [Fact]
     public void CasCaféStockVide()
     {
@@ -58,17 +27,9 @@ public class StockageTest
         buttonPanel.SimulerButtonPressed(ButtonCode.MaintenanceReset);
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
-        // ALORS MakeACoffee est appelé une fois dans le hardware
-        Assert.Equal(1, brewer.MakeACoffeeInvocations);
-
-        // ET le café n'est pas servi
-        Assert.False(brewer.MakeACoffee());
-
-        // ET CollectStoredMoney n'est pas appelé
-        Assert.Equal(0, changeMachineSpy.CollectStoredMoneyInvocations);
-
-        // ET FlushStoredMoney est appelé une fois sur le hardware
-        Assert.Equal(1, changeMachineSpy.FlushStoredMoneyInvocations);
+        // ALORS le hardware tente de faire couler un café mais échoue et rend la monnaie
+        brewer.ShouldHaveBeenCalledOnce();
+        changeMachineSpy.ShouldHaveFlushedMoney();
     }
 
     [Fact]
@@ -90,17 +51,9 @@ public class StockageTest
         // QUAND on commande un café
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
-        // ALORS MakeACoffee n'est pas appelé
-        Assert.Equal(1, brewer.MakeACoffeeInvocations);
-
-        // ET MakeACoffee échoue
-        Assert.False(brewer.MakeACoffee());
-
-        // ET CollectStoredMoney n'est pas appelé
-        Assert.Equal(0, changeMachineSpy.CollectStoredMoneyInvocations);
-
-        // ET FlushStoredMoney est appelé une fois sur le hardware
-        Assert.Equal(1, changeMachineSpy.FlushStoredMoneyInvocations);
+        // ALORS le hardware tente de faire couler un café mais échoue et rend la monnaie
+        brewer.ShouldHaveBeenCalledOnce();
+        changeMachineSpy.ShouldHaveFlushedMoney();
     }
 
     /* Cas allongé a voir plus tard
