@@ -55,9 +55,9 @@ public class SoftwareMachine
                 if (!eauAllongéOk)
                 {
                     // Si l'allongé est impossible, on allume la LED de warning
-                    _buttonPanel.SetLungoWarningState(true);
+                    _buttonPanel.LungoWarningState(true);
 
-                    _changeMachine.FlushStoredMoney();
+                    _changeMachine.CollectStoredMoney(); // On collecte quand meme l'argent car un café a été servi
                     return;
                 }
 

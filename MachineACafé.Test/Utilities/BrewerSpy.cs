@@ -11,6 +11,7 @@ public class BrewerSpy : IBrewer
     public ushort PourWaterInvocations { get; private set; }
 
     public bool ResultatMakeACoffee = true;
+    public bool ResultatPourWater = true;
     public bool Untouched => MakeACoffeeInvocations == 0;
 
     public BrewerSpy(): this(new BrewerStub()) {}
@@ -47,6 +48,12 @@ public class BrewerSpy : IBrewer
     public bool PourWater()
     {
         PourWaterInvocations++;
+
+        if (!ResultatPourWater)
+        {
+            return false;
+        }
+
         return _behavior.PourWater();
     }
 

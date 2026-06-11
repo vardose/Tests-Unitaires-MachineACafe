@@ -28,7 +28,7 @@ public class StockageTest
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
         // ALORS le hardware tente de faire couler un café mais échoue et rend la monnaie
-        brewer.ShouldHaveBeenCalledOnce();
+        brewer.ShouldHaveMadeCoffee();
         changeMachineSpy.ShouldHaveFlushedMoney();
     }
 
@@ -52,11 +52,38 @@ public class StockageTest
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
         // ALORS le hardware tente de faire couler un café mais échoue et rend la monnaie
-        brewer.ShouldHaveBeenCalledOnce();
+        brewer.ShouldHaveMadeCoffee();
         changeMachineSpy.ShouldHaveFlushedMoney();
     }
 
-    /* Cas allongé a voir plus tard
+    [Fact]
+    public void CasCaféAllongé()
+    {
+        // ETANT DONNE une machine à café dont le sotck d'eau est plein
+        var changeMachine = new ChangeMachineFake();
+        var changeMachineSpy = new ChangeMachineSpy(changeMachine);
+        var brewer = new BrewerSpy();
+        var buttonPanel = new ButtonPanelFake();
+
+        _ = new SoftwareMachineBuilder()
+            .AyantUneChangeMachine(changeMachineSpy)
+            .AyantUnBrewer(brewer)
+            .AyantUnButtonPanel(buttonPanel)
+            .Build();
+
+        // QUAND on commande un café allongé
+        buttonPanel.SimulerButtonPressed(ButtonCode.Lungo);
+        changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
+
+        // ALORS le hardware fais couler un café allongé
+        brewer.ShouldHavePulledWater();
+        brewer.ShouldHaveMadeCoffee();
+        brewer.ShouldHavePouredWater();
+        changeMachineSpy.ShouldHaveCollectedMoney();
+        // ET la LED d'alerte de café allongé impossible reste éteinte
+        buttonPanel.ShouldHaveLungoWarningState(false);
+    }
+
     [Fact]
     public void CasCaféAllongéImpossible()
     {
@@ -66,37 +93,24 @@ public class StockageTest
         var brewer = new BrewerSpy();
         var buttonPanel = new ButtonPanelFake();
 
-        brewer.StockEausuffisant = false; // Stock d'eau vide
+        brewer.ResultatPourWater = false; // Stock d'eau insuffisant pour un allongé
 
         _ = new SoftwareMachineBuilder()
             .AyantUneChangeMachine(changeMachineSpy)
-            .AyantUnBrewer(brewer) // TODO: Créer un brewer presque vide pour passer le test au vert
+            .AyantUnBrewer(brewer)
             .AyantUnButtonPanel(buttonPanel)
             .Build();
 
         // QUAND on commande un café allongé
-        changeMachine.SimulerBoutonLungo();
+        buttonPanel.SimulerButtonPressed(ButtonCode.Lungo);
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
-        // ALORS TryPullWater, MakeACoffee puis PourWater sont appelés une fois dans le hardware
-        Assert.Equal(1, brewer.TryPullWaterInvocations);
-        Assert.Equal(1, brewer.MakeACoffeeInvocations);
-        Assert.Equal(1, brewer.PourWaterInvocations);
-
-        // ET le café n'est pas servi
-        Assert.True(brewer.TryPullWater());
-
-        // ET le café est servi
-        Assert.True(brewer.MakeACoffee());
-
-        // ET le rajout d'eau n'est pas servi
-        Assert.False(brewer.PourWater());
-
-        // ET CollectStoredMoney n'est pas appelé
-        Assert.Equal(1, changeMachineSpy.CollectStoredMoneyInvocations);
-
-        // ET FlushStoredMoney est appelé une fois sur le hardware
-        Assert.Equal(0, changeMachineSpy.FlushStoredMoneyInvocations);
+        // ALORS le hardware tente de faire couler un café allongé mais ne peux pas ajouter d'eau
+        brewer.ShouldHavePulledWater();
+        brewer.ShouldHaveMadeCoffee();
+        brewer.ShouldHavePouredWater();
+        changeMachineSpy.ShouldHaveCollectedMoney();
+        // ET la LED d'alerte s'allume pour signaler qu'il est impossible de faire couler un café allongé
+        buttonPanel.ShouldHaveLungoWarningState(true);
     }
-    */
 }

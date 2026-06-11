@@ -14,5 +14,5 @@ public interface IButtonPanel
     /// Allume ou éteint la LED informant de l'impossibilité d'avoir un allongé.
     /// </summary>
     /// <param name="state">Le nouvel état de la LED.</param>
-    void SetLungoWarningState(bool state);
+    void LungoWarningState(bool state);
 }

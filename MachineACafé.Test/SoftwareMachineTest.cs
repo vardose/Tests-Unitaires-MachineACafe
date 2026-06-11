@@ -42,7 +42,7 @@ public class SoftwareMachineTest
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
         // ALORS le hardware fais couler un café et collecte l'argent
-        brewer.ShouldHaveBeenCalledOnce();
+        brewer.ShouldHaveMadeCoffee();
         changeMachineSpy.ShouldHaveCollectedMoney();
     }
 
@@ -64,7 +64,7 @@ public class SoftwareMachineTest
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
         // ALORS le hardware tente de faire couler un café mais échoue et rend la monnaie
-        brewerSpy.ShouldHaveBeenCalledOnce();
+        brewerSpy.ShouldHaveMadeCoffee();
         changeMachineSpy.ShouldHaveFlushedMoney();
     }
 
