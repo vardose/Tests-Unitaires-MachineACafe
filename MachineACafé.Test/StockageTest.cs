@@ -46,7 +46,7 @@ public class StockageTest
         var changeMachineSpy = new ChangeMachineSpy(changeMachine);
         var brewer = new BrewerSpy();
         var buttonPanel = new ButtonPanelFake();
-        brewer.StockEauSuffisant = false; // Stock d'eau vide
+        brewer.ResultatMakeACoffee = false; // Stock d'eau vide
 
         _ = new SoftwareMachineBuilder()
             .AyantUneChangeMachine(changeMachineSpy)
@@ -79,17 +79,22 @@ public class StockageTest
         var changeMachineSpy = new ChangeMachineSpy(changeMachine);
         var brewer = new BrewerSpy();
         var buttonPanel = new ButtonPanelFake();
+        brewer.ResultatMakeACoffee = false; // Bouton reset non activé
 
         _ = new SoftwareMachineBuilder()
             .AyantUneChangeMachine(changeMachineSpy)
             .AyantUnBrewer(brewer)
+            .AyantUnButtonPanel(buttonPanel)
             .Build();
 
         // QUAND on commande un café
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
         // ALORS MakeACoffee n'est pas appelé
-        Assert.Equal(0, brewer.MakeACoffeeInvocations);
+        Assert.Equal(1, brewer.MakeACoffeeInvocations);
+
+        // ET MakeACoffee échoue
+        Assert.False(brewer.MakeACoffee());
 
         // ET CollectStoredMoney n'est pas appelé
         Assert.Equal(0, changeMachineSpy.CollectStoredMoneyInvocations);

@@ -30,17 +30,14 @@ public class SoftwareMachineTest
         // ETANT DONNE une machine à café
         var changeMachine = new ChangeMachineFake();
         var changeMachineSpy = new ChangeMachineSpy(changeMachine);
-        var buttonPanel = new ButtonPanelFake();
 
         var brewer = new BrewerSpy(new BrewerStub());
         _ = new SoftwareMachineBuilder()
             .AyantUneChangeMachine(changeMachineSpy)
             .AyantUnBrewer(brewer)
-            .AyantUnButtonPanel(buttonPanel)
             .Build();
 
         // QUAND on insère une somme supérieure ou égale au prix d'un café
-        buttonPanel.SimulerButtonPressed(ButtonCode.MaintenanceReset);
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
         // ALORS MakeACoffee est appelé une fois sur le hardware

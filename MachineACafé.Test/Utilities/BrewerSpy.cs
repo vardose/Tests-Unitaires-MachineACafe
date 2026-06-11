@@ -10,7 +10,7 @@ internal class BrewerSpy : IBrewer
     public ushort TryPullWaterInvocations { get; private set; }
     public ushort PourWaterInvocations { get; private set; }
 
-    public bool StockEauSuffisant = true;
+    public bool ResultatMakeACoffee = true;
     public bool Untouched => MakeACoffeeInvocations == 0;
 
     public BrewerSpy(): this(new BrewerStub()) {}
@@ -23,7 +23,7 @@ internal class BrewerSpy : IBrewer
     public bool MakeACoffee()
     {
         MakeACoffeeInvocations++;
-        return StockEauSuffisant; // Je renvois le stock d'eau pour le cas où un allongé est impossible
+        return ResultatMakeACoffee; // Je renvois le stock d'eau pour le cas où un allongé est impossible
     }
 
     public bool TryPullWater()

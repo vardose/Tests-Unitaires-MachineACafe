@@ -9,7 +9,7 @@ public class SoftwareMachine
     private readonly IButtonPanel _buttonPanel;
 
     private bool _lungoDemandé = false;
-    private bool _maintenanceResetDemandé = false;
+    private bool _maintenanceResetDemandé = true; // Par défaut la machine est opérationnelle
     private bool _caféServiAvecSuccès = false;
 
     public SoftwareMachine(IBrewer brewer, IChangeMachine changeMachine, IButtonPanel buttonPanel)
