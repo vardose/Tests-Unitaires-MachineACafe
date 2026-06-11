@@ -6,6 +6,8 @@ public class ChangeMachineFake : IChangeMachine
 {
     private Action<CoinCode>? _callback;
 
+    public bool IsLungoRequested { get; private set; } = false;
+
     public void RegisterMoneyInsertedCallback(Action<CoinCode> callback)
     {
         if (_callback != null) throw new NotSupportedException();
@@ -30,8 +32,8 @@ public class ChangeMachineFake : IChangeMachine
         _callback?.Invoke(fiftyCents);
     }
 
-    public bool SimulerBoutonLungo()
+    public void SimulerBoutonLungo()
     {
-        return true;
+        IsLungoRequested = true;
     }
 }

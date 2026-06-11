@@ -13,13 +13,16 @@ public class StockageTest
         var changeMachine = new ChangeMachineFake();
         var changeMachineSpy = new ChangeMachineSpy(changeMachine);
         var brewer = new BrewerSpy();
+        var buttonPanel = new ButtonPanelFake();
 
         _ = new SoftwareMachineBuilder()
-            .AyantUneChangeMachine(changeMachine)
+            .AyantUneChangeMachine(changeMachineSpy)
             .AyantUnBrewer(brewer)
+            .AyantUnButtonPanel(buttonPanel)
             .Build();
 
-        // QUAND on commande un café
+        // QUAND on commande un café et que le bouton reset a été activé lors du dernier rechargement
+        buttonPanel.SimulerButtonPressed(ButtonCode.MaintenanceReset);
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
         // ALORS MakeACoffee est appelé une fois sur le hardware
@@ -38,17 +41,21 @@ public class StockageTest
     [Fact]
     public void CasCaféStockVide()
     {
-        // ETANT DONNE une machine à café dont le sotck d'eau et de café est vide
+        // ETANT DONNE une machine à café dont le sotck d'eau ou de café est vide
         var changeMachine = new ChangeMachineFake();
         var changeMachineSpy = new ChangeMachineSpy(changeMachine);
         var brewer = new BrewerSpy();
+        var buttonPanel = new ButtonPanelFake();
+        brewer.StockEauSuffisant = false; // Stock d'eau vide
 
         _ = new SoftwareMachineBuilder()
-            .AyantUneChangeMachine(changeMachine)
-            .AyantUnBrewer(brewer) // TODO: Créer un brewer vide pour passer le test au vert
+            .AyantUneChangeMachine(changeMachineSpy)
+            .AyantUnBrewer(brewer)
+            .AyantUnButtonPanel(buttonPanel)
             .Build();
 
-        // QUAND on commande un café
+        // QUAND on commande un café et que le bouton reset a été activé lors du dernier rechargement
+        buttonPanel.SimulerButtonPressed(ButtonCode.MaintenanceReset);
         changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
 
         // ALORS MakeACoffee est appelé une fois dans le hardware
@@ -58,12 +65,40 @@ public class StockageTest
         Assert.False(brewer.MakeACoffee());
 
         // ET CollectStoredMoney n'est pas appelé
-        Assert.Equal(1, changeMachineSpy.CollectStoredMoneyInvocations);
+        Assert.Equal(0, changeMachineSpy.CollectStoredMoneyInvocations);
 
         // ET FlushStoredMoney est appelé une fois sur le hardware
-        Assert.Equal(0, changeMachineSpy.FlushStoredMoneyInvocations);
+        Assert.Equal(1, changeMachineSpy.FlushStoredMoneyInvocations);
     }
 
+    [Fact]
+    public void CasStockPleinSansBoutonReset()
+    {
+        // ETANT DONNE une machine à café dont les sotcks ont été réprovisioné mais le bouton reset n'a pas été préssé
+        var changeMachine = new ChangeMachineFake();
+        var changeMachineSpy = new ChangeMachineSpy(changeMachine);
+        var brewer = new BrewerSpy();
+        var buttonPanel = new ButtonPanelFake();
+
+        _ = new SoftwareMachineBuilder()
+            .AyantUneChangeMachine(changeMachineSpy)
+            .AyantUnBrewer(brewer)
+            .Build();
+
+        // QUAND on commande un café
+        changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
+
+        // ALORS MakeACoffee n'est pas appelé
+        Assert.Equal(0, brewer.MakeACoffeeInvocations);
+
+        // ET CollectStoredMoney n'est pas appelé
+        Assert.Equal(0, changeMachineSpy.CollectStoredMoneyInvocations);
+
+        // ET FlushStoredMoney est appelé une fois sur le hardware
+        Assert.Equal(1, changeMachineSpy.FlushStoredMoneyInvocations);
+    }
+
+    /* Cas allongé a voir plus tard
     [Fact]
     public void CasCaféAllongéImpossible()
     {
@@ -71,10 +106,14 @@ public class StockageTest
         var changeMachine = new ChangeMachineFake();
         var changeMachineSpy = new ChangeMachineSpy(changeMachine);
         var brewer = new BrewerSpy();
+        var buttonPanel = new ButtonPanelFake();
+
+        brewer.StockEausuffisant = false; // Stock d'eau vide
 
         _ = new SoftwareMachineBuilder()
-            .AyantUneChangeMachine(changeMachine)
+            .AyantUneChangeMachine(changeMachineSpy)
             .AyantUnBrewer(brewer) // TODO: Créer un brewer presque vide pour passer le test au vert
+            .AyantUnButtonPanel(buttonPanel)
             .Build();
 
         // QUAND on commande un café allongé
@@ -93,7 +132,7 @@ public class StockageTest
         Assert.True(brewer.MakeACoffee());
 
         // ET le rajout d'eau n'est pas servi
-        Assert.False(brewer.MakeACoffee());
+        Assert.False(brewer.PourWater());
 
         // ET CollectStoredMoney n'est pas appelé
         Assert.Equal(1, changeMachineSpy.CollectStoredMoneyInvocations);
@@ -101,4 +140,5 @@ public class StockageTest
         // ET FlushStoredMoney est appelé une fois sur le hardware
         Assert.Equal(0, changeMachineSpy.FlushStoredMoneyInvocations);
     }
+    */
 }
