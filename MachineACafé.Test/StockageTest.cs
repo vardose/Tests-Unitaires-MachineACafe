@@ -113,4 +113,33 @@ public class StockageTest
         // ET la LED d'alerte s'allume pour signaler qu'il est impossible de faire couler un café allongé
         buttonPanel.ShouldHaveLungoWarningState(true);
     }
+
+    [Fact]
+    public void CasStockDemiPleinAvecReset_CaféNormal()
+    {
+        // ETANT DONNE une machine dont le technicien a rechargé les stocks à moitié
+        // ET a activé le bouton reset de maintenance
+        var changeMachine = new ChangeMachineFake();
+        var changeMachineSpy = new ChangeMachineSpy(changeMachine);
+        var brewer = new BrewerSpy();
+        var buttonPanel = new ButtonPanelFake();
+
+        brewer.ResultatMakeACoffee = true;   // stock partiel : café normal OK
+        brewer.ResultatPourWater = false;    // pas assez d'eau pour un allongé
+
+        _ = new SoftwareMachineBuilder()
+            .AyantUneChangeMachine(changeMachineSpy)
+            .AyantUnBrewer(brewer)
+            .AyantUnButtonPanel(buttonPanel)
+            .Build();
+
+        buttonPanel.SimulerButtonPressed(ButtonCode.MaintenanceReset);
+
+        // QUAND on commande un café normal
+        changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
+
+        // ALORS le café coule et l'argent est encaissé
+        brewer.ShouldHaveMadeCoffee();
+        changeMachineSpy.ShouldHaveCollectedMoney();
+    }
 }
