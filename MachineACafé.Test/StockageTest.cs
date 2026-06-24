@@ -174,4 +174,30 @@ public class StockageTest
         changeMachineSpy.ShouldHaveCollectedMoney();
         buttonPanel.ShouldHaveLungoWarningState(true);
     }
+
+    [Fact]
+    public void CasStockSemiPleinSansBoutonReset()
+    {
+        // ETANT DONNE une machine rechargée à moitié par le technicien
+        // MAIS le bouton reset n'a pas été activé
+        var changeMachine = new ChangeMachineFake();
+        var changeMachineSpy = new ChangeMachineSpy(changeMachine);
+        var brewer = new BrewerSpy();
+        var buttonPanel = new ButtonPanelFake();
+
+        brewer.ResultatMakeACoffee = false; // reset non activé : le hardware refuse
+
+        _ = new SoftwareMachineBuilder()
+            .AyantUneChangeMachine(changeMachineSpy)
+            .AyantUnBrewer(brewer)
+            .AyantUnButtonPanel(buttonPanel)
+            .Build();
+
+        // QUAND on commande un café (sans avoir appuyé sur reset)
+        changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
+
+        // ALORS le hardware tente de faire couler un café mais échoue et rend la monnaie
+        brewer.ShouldHaveMadeCoffee();
+        changeMachineSpy.ShouldHaveFlushedMoney();
+    }
 }
