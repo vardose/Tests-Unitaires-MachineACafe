@@ -1,6 +1,4 @@
-# Tests-Unitaires-MachineACafe
-
-## **Plan de tests** :
+**Plan de tests — StockageTest**
 
 - **Fichier source**: [MachineACafé.Test/StockageTest.cs](MachineACafé.Test/StockageTest.cs#L1-L200)
 
@@ -77,10 +75,21 @@
   - **Étapes**: insérer pièce.
   - **Résultats attendus**: tentative de faire un café puis monnaie rendue (`ShouldHaveMadeCoffee`, `ShouldHaveFlushedMoney`).
 
-## **Notes d'exécution** :
+**Notes d'exécution**:
 - Pour exécuter les tests locaux :
 
 ```powershell
 dotnet test MachineACafée9.Test\\MachineACafée9.Test.csproj
 ```
+
+- Pour cibler uniquement `StockageTest` :
+
+```powershell
+dotnet test MachineACafée9.Test\\MachineACafée9.Test.csproj --filter FullyQualifiedName~MachineACafée9.Test.StockageTest
+```
+
+- Vérifier les implémentations des doubles (`Utilities` et `TestDoubles`) pour comprendre les méthodes d'assertion (`ShouldHave...`).
+
 ---
+
+Fichier généré automatiquement à partir de [MachineACafé.Test/StockageTest.cs](MachineACafé.Test/StockageTest.cs#L1-L200).
