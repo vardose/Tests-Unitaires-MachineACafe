@@ -115,7 +115,7 @@ public class StockageTest
     }
 
     [Fact]
-    public void CasStockDemiPleinAvecReset_CaféNormal()
+    public void CasStockSemiPleinAvecResetEtCaféNormal()
     {
         // ETANT DONNE une machine dont le technicien a rechargé les stocks à moitié
         // ET a activé le bouton reset de maintenance
@@ -141,5 +141,37 @@ public class StockageTest
         // ALORS le café coule et l'argent est encaissé
         brewer.ShouldHaveMadeCoffee();
         changeMachineSpy.ShouldHaveCollectedMoney();
+    }
+    [Fact]
+    public void CasStockSemiPleinAvecResetEtCaféAllongéImpossible()
+    {
+        // ETANT DONNE une machine rechargée à moitié par le technicien (reset activé)
+        var changeMachine = new ChangeMachineFake();
+        var changeMachineSpy = new ChangeMachineSpy(changeMachine);
+        var brewer = new BrewerSpy();
+        var buttonPanel = new ButtonPanelFake();
+
+        brewer.ResultatMakeACoffee = true;
+        brewer.ResultatPourWater = false;
+
+        _ = new SoftwareMachineBuilder()
+            .AyantUneChangeMachine(changeMachineSpy)
+            .AyantUnBrewer(brewer)
+            .AyantUnButtonPanel(buttonPanel)
+            .Build();
+
+        buttonPanel.SimulerButtonPressed(ButtonCode.MaintenanceReset);
+
+        // QUAND on commande un café allongé
+        buttonPanel.SimulerButtonPressed(ButtonCode.Lungo);
+        changeMachine.SimulerInsertionPièce(CoinCode.FiftyCents);
+
+        // ALORS le café de base coule, l'eau supplémentaire échoue,
+        // la LED s'allume, et l'argent est quand même encaissé
+        brewer.ShouldHavePulledWater();
+        brewer.ShouldHaveMadeCoffee();
+        brewer.ShouldHavePouredWater();
+        changeMachineSpy.ShouldHaveCollectedMoney();
+        buttonPanel.ShouldHaveLungoWarningState(true);
     }
 }
